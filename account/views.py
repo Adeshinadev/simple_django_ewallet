@@ -12,6 +12,11 @@ def homepage(request):
     return render(request, 'signin.html')
 
 
+def dashboard(request):
+    wallet_obj = Wallet.objects.filter(user=request.user).first()
+    return render(request, 'balance.html', {'wallet_obj': wallet_obj})
+
+
 def make_login(request):
     if request.method == 'POST':
         print('lloo')
@@ -22,8 +27,8 @@ def make_login(request):
                 user_obj = User.objects.get(username=request.POST.get('username'))
                 print(user_obj, 'ooooo')
                 wallet_obj = Wallet.objects.filter(user=user_obj).first()
-
-                return render(request, 'balance.html', {'wallet_obj': wallet_obj})
+                # return render(request, 'balance.html', {'wallet_obj': wallet_obj})
+                return redirect('dashboard')
         messages.info(request, 'password or username incorrect')
         return render(request, 'signin.html')
     else:
@@ -48,8 +53,3 @@ def buy(request):
     Wallet.objects.filter(user=user_obj).update(amount=c)
     wallet_obj = Wallet.objects.filter(user=user_obj).first()
     return render(request, 'balance.html', {'wallet_obj': wallet_obj})
-
-
-
-
-
